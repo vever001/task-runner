@@ -1,6 +1,6 @@
 <?php
 
-namespace OpenEuropa\TaskRunner\Common;
+namespace OpenEuropa\TaskRunner\Utils;
 
 use Dflydev\DotAccessData\Data;
 

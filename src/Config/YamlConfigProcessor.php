@@ -3,7 +3,7 @@
 namespace OpenEuropa\TaskRunner\Config;
 
 use Consolidation\Config\Loader\ConfigProcessor;
-use OpenEuropa\TaskRunner\Common\ArrayManipulator;
+use OpenEuropa\TaskRunner\Utils\ArrayManipulator;
 
 /**
  * Custom processor for YAML based configuration.
