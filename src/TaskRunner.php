@@ -78,19 +78,21 @@ class TaskRunner
     /**
      * TaskRunner constructor.
      *
+     * @param \Robo\Config\Config                               $config
      * @param \Symfony\Component\Console\Input\InputInterface   $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
      * @param \Composer\Autoload\ClassLoader                    $classLoader
      */
-    public function __construct(InputInterface $input, OutputInterface $output, ClassLoader $classLoader)
+    public function __construct(Config $config, InputInterface $input, OutputInterface $output, ClassLoader $classLoader)
     {
+        $this->setConfig($config);
         $this->input = $input;
         $this->output = $output;
 
         $this->workingDir = $this->getWorkingDir($this->input);
         chdir($this->workingDir);
+        $config->set('runner.working_dir', realpath($this->workingDir));
 
-        $this->config = $this->createConfiguration();
         $this->application = $this->createApplication();
         $this->application->setAutoExit(false);
         $this->container = $this->createContainer($this->input, $this->output, $this->application, $this->config, $classLoader);
@@ -102,7 +104,10 @@ class TaskRunner
     }
 
     /**
+     * Runs the instantiated Task Runner application.
+     *
      * @return int
+     *   The exiting status code of the application.
      */
     public function run()
     {
@@ -130,51 +135,6 @@ class TaskRunner
         $this->runner->registerCommandClasses($this->application, $this->defaultCommandClasses);
 
         return $this->getContainer()->get("{$class}Commands");
-    }
-
-    /**
-     * Create default configuration.
-     *
-     * @return Config
-     */
-    private function createConfiguration()
-    {
-        $config = new Config();
-        $config->set('runner.working_dir', realpath($this->workingDir));
-        Robo::loadConfiguration([
-            __DIR__.'/../config/runner.yml',
-            'runner.yml.dist',
-            'runner.yml',
-            $this->getLocalConfigurationFilepath(),
-        ], $config);
-
-        return $config;
-    }
-
-    /**
-     * Get the local configuration filepath.
-     *
-     * @param string $configuration_file
-     *   The default filepath.
-     *
-     * @return string|null
-     *   The local configuration file path, or null if it doesn't exist.
-     */
-    private function getLocalConfigurationFilepath($configuration_file = 'openeuropa/taskrunner/runner.yml')
-    {
-        if ($config = getenv('OPENEUROPA_TASKRUNNER_CONFIG')) {
-            return $config;
-        }
-
-        if ($config = getenv('XDG_CONFIG_HOME')) {
-            return $config . '/' . $configuration_file;
-        }
-
-        if ($home = getenv('HOME')) {
-            return getenv('HOME') . '/.config/' . $configuration_file;
-        }
-
-        return null;
     }
 
     /**
@@ -220,7 +180,9 @@ class TaskRunner
         $application
             ->getDefinition()
             ->addOption(new InputOption('--working-dir', null, InputOption::VALUE_REQUIRED, 'Working directory, defaults to current working directory.', $this->workingDir));
-
+        $application
+            ->getDefinition()
+            ->addOption(new InputOption('--site', null, InputOption::VALUE_REQUIRED, 'The multisite to execute this command against.', []));
         return $application;
     }
 
