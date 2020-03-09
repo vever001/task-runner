@@ -16,7 +16,14 @@ $timer = new TimeKeeper();
 $timer->start();
 
 // Initialize input and output.
-$input = new ArgvInput($_SERVER['argv']);
+$argv = $_SERVER['argv'];
+
+// Allow @ aliases, e.g: ./vendor/bin/run @mysite command.
+if (count($argv) > 1 && stripos($argv[1], '@') === 0) {
+    $argv[1] = sprintf('--site=%s', substr($argv[1], 1));
+}
+
+$input = new ArgvInput($argv);
 $output = new ConsoleOutput();
 
 // Initialize configuration.
