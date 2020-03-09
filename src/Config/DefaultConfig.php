@@ -19,7 +19,6 @@ class DefaultConfig extends TaskRunnerConfig {
     parent::__construct();
 
     $this->set('runner.repo_root', $repo_root);
-    $this->set('drupal.root', $repo_root . '/build');
     $this->set('runner.root', dirname(dirname(dirname(__FILE__))));
     $this->set('runner.bin_dir', $repo_root . '/vendor/bin');
   }
