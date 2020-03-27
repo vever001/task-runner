@@ -21,6 +21,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
 {
     use LoadAllTasks;
     use TaskRunner\Tasks\ProcessConfigFile\loadTasks;
+    use TaskRunner\Tasks\RunCommands\loadTasks;
     use \NuvoleWeb\Robo\Task\Config\Php\loadTasks;
 
     /**
@@ -104,6 +105,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
         $this->secureOption($task, 'time', time());
         $this->secureOption($task, 'atime', time());
         $this->secureOption($task, 'mode', 0777);
+        $this->secureOption($task, 'args', []);
 
         switch ($task['task']) {
             case "mkdir":
@@ -150,7 +152,7 @@ class CollectionFactory extends BaseTask implements BuilderAwareInterface, Simul
                 ]);
 
             case "run":
-                return $this->taskExec($this->getConfig()->get('runner.bin_dir').'/run')->arg($task['command']);
+                return $this->taskRunCommands([$task['command'] => $task['args']]);
 
             case "process-php":
                 $this->secureOption($task, 'override', false);
