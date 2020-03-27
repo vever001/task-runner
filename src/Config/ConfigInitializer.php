@@ -131,7 +131,8 @@ class ConfigInitializer {
    */
   public function loadDefaultConfig() {
     $this->processor->add($this->config->export());
-    $this->processor->extend($this->loader->load($this->config->get('runner.root') . '/config/runner.yml'));
+    $runner_root = $this->config->get('runner.root');
+    $this->processor->extend($this->loader->load( "$runner_root/config/runner.yml"));
     $this->config->replace($this->processor->export());
 
     return $this;
@@ -144,8 +145,9 @@ class ConfigInitializer {
    *   Config.
    */
   public function loadProjectConfig() {
-    $this->processor->extend($this->loader->load($this->config->get('runner.repo_root') . '/runner.yml.dist')); // TODO FAILS !!!!
-    $this->processor->extend($this->loader->load($this->config->get('runner.repo_root') . '/runner.yml'));
+    $repo_root = $this->config->get('runner.repo_root');
+    $this->processor->extend($this->loader->load("$repo_root/runner.yml.dist"));
+    $this->processor->extend($this->loader->load("$repo_root/runner.yml"));
     $this->config->replace($this->processor->export());
 
     return $this;
@@ -159,8 +161,10 @@ class ConfigInitializer {
    */
   public function loadSiteConfig() {
     if ($this->site) {
-      $this->processor->extend($this->loader->load($this->config->get('drupal.root') . "/sites/{$this->site}/runner.yml.dist"));
-      $this->processor->extend($this->loader->load($this->config->get('drupal.root') . "/sites/{$this->site}/runner.yml"));
+      $repo_root = $this->config->get('runner.repo_root');
+      $drupal_root = $this->config->get('drupal.root');
+      $this->processor->extend($this->loader->load("$repo_root/$drupal_root/sites/{$this->site}/runner.yml.dist"));
+      $this->processor->extend($this->loader->load("$repo_root/$drupal_root/sites/{$this->site}/runner.yml"));
       $this->config->replace($this->processor->export());
     }
 
