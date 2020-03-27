@@ -3,6 +3,7 @@
 namespace OpenEuropa\TaskRunner\Commands;
 
 use Consolidation\AnnotatedCommand\AnnotationData;
+use OpenEuropa\TaskRunner\Config\ConfigInitializer;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Common\IO;
 use Robo\Contract\BuilderAwareInterface;
@@ -129,5 +130,22 @@ abstract class AbstractCommands implements BuilderAwareInterface, IOAwareInterfa
     protected function isSimulating()
     {
         return (bool) $this->input()->getOption('simulate');
+    }
+
+    /**
+     * Switches the current config values to the given site.
+     *
+     * @param string $site_name
+     *   The name of a multisite, e.g., if web/sites/example.com is the site,
+     *   $site_name would be example.com.
+     */
+    public function switchSiteContext($site_name) {
+        $this->output()->writeln("Switching site context to <comment>$site_name</comment>.");
+        $config_initializer = new ConfigInitializer($this->getConfig()->get('runner.repo_root'), $this->input());
+        $config_initializer->setSite($site_name);
+        $new_config = $config_initializer->initialize();
+
+        // Replace config.
+        $this->getConfig()->replace($new_config->export());
     }
 }
