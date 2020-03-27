@@ -15,7 +15,6 @@ use OpenEuropa\TaskRunner\Services\Composer;
 use OpenEuropa\TaskRunner\Contract\FilesystemAwareInterface;
 use League\Container\ContainerAwareTrait;
 use OpenEuropa\TaskRunner\Services\Time;
-use Robo\Application;
 use Robo\Common\ConfigAwareTrait;
 use Robo\Config\Config;
 use Robo\Robo;
@@ -142,7 +141,7 @@ class TaskRunner
      *
      * @param \Symfony\Component\Console\Input\InputInterface $input
      * @param \Symfony\Component\Console\Output\OutputInterface $output
-     * @param \Robo\Application $application
+     * @param \OpenEuropa\TaskRunner\Application $application
      * @param \Robo\Config\Config $config
      *
      * @return \League\Container\Container|\League\Container\ContainerInterface
@@ -172,7 +171,7 @@ class TaskRunner
     /**
      * Create application.
      *
-     * @return \Robo\Application
+     * @return \OpenEuropa\TaskRunner\Application
      */
     private function createApplication()
     {
@@ -197,7 +196,7 @@ class TaskRunner
     }
 
     /**
-     * @param \Robo\Application $application
+     * @param \OpenEuropa\TaskRunner\Application $application
      */
     private function registerDynamicCommands(Application $application)
     {

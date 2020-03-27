@@ -20,6 +20,7 @@ abstract class AbstractDrupalCommands extends AbstractCommands implements Filesy
     use TaskRunnerTraits\FilesystemAwareTrait;
     use TaskRunnerTasks\CollectionFactory\loadTasks;
     use TaskRunnerTasks\Drush\loadTasks;
+    use TaskRunnerTasks\RunCommands\loadTasks;
     use NuvoleWebTasks\Config\Php\loadTasks;
 
     /**
